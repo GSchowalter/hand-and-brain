@@ -2,7 +2,7 @@ import { getAbsoluteUrl } from "@/utils/vercel-utilities";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
-const test = () => {
+const Test = () => {
   const [clientUrl, setClientUrl] = useState("whats going on?");
 
   let router = useRouter();
@@ -17,4 +17,4 @@ const test = () => {
   );
 };
 
-export default test;
+export default Test;
