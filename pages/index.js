@@ -4,6 +4,8 @@ import { useRouter } from "next/router";
 import { getAbsoluteUrl } from "@/utils/vercel-utilities";
 
 export default function Home() {
+  let [oauth, setOAuth] = useState(null);
+
   const lichessHost = "https://lichess.org";
   const scopes = ["board:play"];
   const clientId = "lichess-api-demo";
@@ -11,7 +13,11 @@ export default function Home() {
   let BASE_PATH = "";
   let clientUrl = "";
 
-  const authenticate = async (oauth) => {
+  async function login() {
+    await oauth.fetchAuthorizationCode();
+  }
+
+  const authenticate = async () => {
     const httpClient = oauth.decorateFetchHTTPClient(window.fetch);
     const res = await httpClient(`${lichessHost}/api/account`);
     const me = {
@@ -22,8 +28,9 @@ export default function Home() {
     // this.me = me;
   };
 
-  async function init(oauth) {
+  async function init() {
     try {
+      console.log(oauth);
       const accessContext = await oauth.getAccessToken();
       if (accessContext) await authenticate();
     } catch (err) {
@@ -46,22 +53,25 @@ export default function Home() {
     BASE_PATH = router.basePath;
     clientUrl = getAbsoluteUrl() + BASE_PATH;
 
-    let oauth = new OAuth2AuthCodePKCE({
-      authorizationUrl: `${lichessHost}/oauth`,
-      tokenUrl: `${lichessHost}/api/token`,
-      clientId,
-      scopes,
-      redirectUrl: clientUrl,
-      onAccessTokenExpiry: (refreshAccessToken) => refreshAccessToken(),
-      onInvalidGrant: console.warn,
-    });
+    setOAuth(
+      new OAuth2AuthCodePKCE({
+        authorizationUrl: `${lichessHost}/oauth`,
+        tokenUrl: `${lichessHost}/api/token`,
+        clientId,
+        scopes,
+        redirectUrl: clientUrl,
+        onAccessTokenExpiry: (refreshAccessToken) => refreshAccessToken(),
+        onInvalidGrant: console.warn,
+      })
+    );
 
-    init(oauth);
+    if (oauth) {
+      init();
+    }
   }, []);
 
   function handleClick() {
-    console.log(`Base path: ${BASE_PATH}`);
-    console.log(`Client URL: ${clientUrl}`);
+    login();
     return;
   }
 
