@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { HttpClient, OAuth2AuthCodePKCE } from "@bity/oauth2-auth-code-pkce";
 import { useRouter } from "next/router";
 import { getAbsoluteUrl } from "@/utils/vercel-utilities";
+import { Auth } from "@/utils/auth";
+import Link from "next/link";
 
 export default function Home() {
   let [oauth, setOAuth] = useState(null);
@@ -71,14 +73,13 @@ export default function Home() {
   }, []);
 
   function handleClick() {
-    login();
     return;
   }
 
   return (
     <div>
       <p>Welcome to my hand and brain app</p>
-      <button onClick={handleClick}>Press to authenticate</button>
+      <Link href="/login">Press to authenticate</Link>
     </div>
   );
 }
