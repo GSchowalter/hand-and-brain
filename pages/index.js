@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { HttpClient, OAuth2AuthCodePKCE } from "@bity/oauth2-auth-code-pkce";
 import { useRouter } from "next/router";
-import { getAbsoluteUrl } from "@/utils/vercel-utilities";
-import { Auth } from "@/utils/auth";
+import { getAbsoluteUrl } from "@/lib/vercel-utilities";
+import { Auth } from "@/lib/auth";
 import Link from "next/link";
 
-export default function Home() {
+const Home = not_authed;
+
+function authed() {
+  return <p>authed</p>;
+}
+
+function not_authed() {
   let [oauth, setOAuth] = useState(null);
 
   const lichessHost = "https://lichess.org";
@@ -83,3 +89,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default Home;
